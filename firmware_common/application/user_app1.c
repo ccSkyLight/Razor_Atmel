@@ -87,7 +87,12 @@ Promises:
 */
 void UserApp1Initialize(void)
 {
- 
+  LedOff(WHITE);
+  LedOff(BLUE);
+  LedOff(YELLOW);
+  LedOff(PURPLE);
+  
+  
   /* If good initialization, set state to Idle */
   if( 1 )
   {
@@ -118,6 +123,7 @@ Promises:
 */
 void UserApp1RunActiveState(void)
 {
+    
   UserApp1_StateMachine();
 
 } /* end UserApp1RunActiveState */
@@ -136,8 +142,68 @@ State Machine Function Definitions
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
 {
+    static u16 u16TimerCounter=0;
+    static u8 u8LedNo=0;
+    static u16 u16TimeCounterLimit_Ms=2000;
 
-} /* end UserApp1SM_Idle() */
+    u16TimerCounter++;
+
+  if(u16TimerCounter==u16TimeCounterLimit_Ms)
+  {
+    u8LedNo++;
+    u16TimerCounter=0;
+    u16TimeCounterLimit_Ms=u16TimeCounterLimit_Ms/2;
+  
+    switch(u8LedNo)
+    {
+    case 1:
+      LedPWM(WHITE,LED_PWM_100);
+      break;
+    
+    case 2:
+      LedPWM(PURPLE,LED_PWM_70);
+      break;
+    
+    case 3:
+      LedPWM(BLUE,LED_PWM_50);
+      break;
+    
+    case 4:
+      LedPWM(CYAN,LED_PWM_30);
+      break;
+    
+    case 5:
+      LedPWM(GREEN,LED_PWM_10);
+      break;
+    
+    case 6:
+      LedOff(WHITE);
+      LedOff(PURPLE);
+      LedOff(BLUE);
+      LedOff(CYAN);
+      LedOff(GREEN);
+      u8LedNo=0;
+      u16TimeCounterLimit_Ms=2000;
+      break;
+    }
+  }
+
+    
+
+    
+     
+
+          
+      
+    
+    
+    
+}/* }end UserApp1SM_Idle() */
+    
+
+/*-------------------------------------------------------------------------------------------------------------------*/
+/* Handle an error */
+   /* end UserApp1SM_Idle() */
     
 
 /*-------------------------------------------------------------------------------------------------------------------*/

@@ -142,80 +142,34 @@ State Machine Function Definitions
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
 {
-    static u16 u16BlinkCount=0;
-    
-   
-    if(WasButtonPressed(BUTTON0))
-    {
-        ButtonAcknowledge(BUTTON0);
-        u8PressCounter++;
-        u16BlinkCount = 0; 
+   static u8 u8KeyValue=0;
+  if(WasButtonPressed(BUTTON1))  
+  {
+    ButtonAcknowledge(BUTTON1);
+    u8KeyValue=5;
+  }
+
+  if(WasButtonPressed(BUTTON2))
+  {
+     ButtonAcknowledge(BUTTON2);
+    u8KeyValue=6;
+  }
+
+
+  switch(u8KeyValue)
+   {
+    case 5:
+      LedToggle(PURPLE);     
+      u8KeyValue=0;          
+      break;
+    case 6:
+      LedToggle(BLUE);       
+      u8KeyValue=0;          
+      break;
+    default:
+      break;
     }
-    
-    if(WasButtonPressed(BUTTON1))
-    {
-        ButtonAcknowledge(BUTTON1);
-        u8PressCounter--;
-        u16BlinkCount = 0; 
-    }
-    
-    switch(u8PressCounter)
-            { 
-              case 0:
-                LedOn(YELLOW);                                           
-              case 1:
-                u16BlinkCount++; 
-                
-                if(u16BlinkCount == 500) 
-                { 
-                u16BlinkCount = 0; 
-                LedToggle(YELLOW); 
-                }
-                
-                break;
-                
-              case 2:
-                u16BlinkCount++; 
-                
-                if(u16BlinkCount == 250) 
-                { 
-                u16BlinkCount = 0; 
-                LedToggle(YELLOW); 
-                }
-                
-                break;
-                
-              case 3:
-                u16BlinkCount++; 
-                
-                if(u16BlinkCount == 125) 
-                { 
-                u16BlinkCount = 0; 
-                LedToggle(YELLOW); 
-                }
-                
-                break;
-                
-              case 4:
-                u16BlinkCount++; 
-                
-                if(u16BlinkCount == 63) 
-                { 
-                u16BlinkCount = 0; 
-                LedToggle(YELLOW); 
-                }
-                
-                break;
-              
-               case 5:
-                 u8PressCounter=0;
-                 break;
-                 
-                
-              default:
-                break;
-            }
-    
+
     
     
 }/* }end UserApp1SM_Idle() */

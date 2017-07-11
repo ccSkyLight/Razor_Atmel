@@ -142,35 +142,79 @@ State Machine Function Definitions
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
 {
-    static u16 u16Counter=0;                                                        
-    static LedRateType eLedDutyLevel=LED_PWM_0;
-    u16Counter++;
+    static u16 u16BlinkCount=0;
     
-    if(u16Counter==40)
+   
+    if(WasButtonPressed(BUTTON0))
     {
-        LedPWM(WHITE,eLedDutyLevel);
-        u16Counter=0;
-        
-        if(eLedDutyLevel<LED_PWM_PERIOD)
-        {
-           eLedDutyLevel++; 
-        }
-        else
-        {
-          
-            if(eLedDutyLevel>LED_PWM_0)
-            {
-                eLedDutyLevel--;
-            }    
-        }       
-}
+        ButtonAcknowledge(BUTTON0);
+        u8PressCounter++;
+        u16BlinkCount = 0; 
+    }
     
-
+    if(WasButtonPressed(BUTTON1))
+    {
+        ButtonAcknowledge(BUTTON1);
+        u8PressCounter--;
+        u16BlinkCount = 0; 
+    }
     
-     
-
-          
-      
+    switch(u8PressCounter)
+            { 
+              case 0:
+                LedOn(YELLOW);                                           
+              case 1:
+                u16BlinkCount++; 
+                
+                if(u16BlinkCount == 500) 
+                { 
+                u16BlinkCount = 0; 
+                LedToggle(YELLOW); 
+                }
+                
+                break;
+                
+              case 2:
+                u16BlinkCount++; 
+                
+                if(u16BlinkCount == 250) 
+                { 
+                u16BlinkCount = 0; 
+                LedToggle(YELLOW); 
+                }
+                
+                break;
+                
+              case 3:
+                u16BlinkCount++; 
+                
+                if(u16BlinkCount == 125) 
+                { 
+                u16BlinkCount = 0; 
+                LedToggle(YELLOW); 
+                }
+                
+                break;
+                
+              case 4:
+                u16BlinkCount++; 
+                
+                if(u16BlinkCount == 63) 
+                { 
+                u16BlinkCount = 0; 
+                LedToggle(YELLOW); 
+                }
+                
+                break;
+              
+               case 5:
+                 u8PressCounter=0;
+                 break;
+                 
+                
+              default:
+                break;
+            }
     
     
     

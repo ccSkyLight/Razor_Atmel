@@ -91,6 +91,7 @@ void UserApp1Initialize(void)
   LedOff(BLUE);
   LedOff(YELLOW);
   LedOff(PURPLE);
+  //LedBlink(YELLOW,LED_0_5HZ);
   
   
   /* If good initialization, set state to Idle */
@@ -142,36 +143,147 @@ State Machine Function Definitions
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
 {
-   static u8 u8KeyValue=0;
-  if(WasButtonPressed(BUTTON1))  
-  {
-    ButtonAcknowledge(BUTTON1);
-    u8KeyValue=5;
-  }
+	static u8 u8RealPassword[]={1,2,3,1,2,3};
+	static u8 u8UserPassword[]={0,0,0,0,0,0};
+	static u8 u8Index=0;
+	static u8 u8Comfirm=0;
+	static u16 u16Counter=0;
+	static bool bPressed=FALSE;
+	static bool bIsOk=TRUE;
+	static u16 u16TimerCounter=0;
+	u8 u8TempIndex;
 
-  if(WasButtonPressed(BUTTON2))
-  {
-     ButtonAcknowledge(BUTTON2);
-    u8KeyValue=6;
-  }
+	if(WasButtonPressed(BUTTON3))
+	{
+	  	ButtonAcknowledge(BUTTON0);
+	  	ButtonAcknowledge(BUTTON1);
+		ButtonAcknowledge(BUTTON2);	
+		ButtonAcknowledge(BUTTON3);
+		u8Comfirm++;
+	}
 
+	if(u8Comfirm==2)
+	{
+	  
+		for(u8TempIndex=0;u8TempIndex<6;u8TempIndex++)
+		{
+		  
+			if(u8RealPassword[u8TempIndex]!=
+			u8UserPassword[u8TempIndex])
+			{
+				bIsOk=FALSE;
+				break;
+			}
+		}
 
-  switch(u8KeyValue)
-   {
-    case 5:
-      LedToggle(PURPLE);     
-      u8KeyValue=0;          
-      break;
-    case 6:
-      LedToggle(BLUE);       
-      u8KeyValue=0;          
-      break;
-    default:
-      break;
+		if(bIsOk)
+		{
+			LedOn(WHITE);
+			LedOff(PURPLE);
+			bIsOk=TRUE;
+		}
+		else
+		{
+			LedOff(WHITE);
+			LedOn(PURPLE);
+			bIsOk=TRUE;
+		}
+		LedOff(BLUE);
+		u8Comfirm=0;
+		
+		
+		for(u8Index=0;u8Index<6;u8Index++)
+		{
+		  	u8UserPassword[u8Index]=0;
+		}
+		u8Index=0;
+	}
+
+	if(u8Comfirm==1)
+	{
+		LedOn(BLUE);
+
+		if(u8Index<6)
+		{
+		  
+			if(WasButtonPressed(BUTTON0))
+			{
+				ButtonAcknowledge(BUTTON0);
+				LedOn(RED);
+				bPressed=TRUE;
+				u8UserPassword[u8Index]=1;
+				u8Index++;
+				PWMAudioSetFrequency(BUZZER1,1000);
+				PWMAudioOn(BUZZER1);
+			}
+
+			if(WasButtonPressed(BUTTON1))
+			{
+				ButtonAcknowledge(BUTTON1);
+				LedOn(RED);
+				bPressed=TRUE;
+				u8UserPassword[u8Index]=2;
+				u8Index++;
+				PWMAudioSetFrequency(BUZZER1,1000);
+				PWMAudioOn(BUZZER1);
+			}
+
+			if(WasButtonPressed(BUTTON2))
+			{
+				ButtonAcknowledge(BUTTON2);
+				LedOn(RED);
+				bPressed=TRUE;
+				u8UserPassword[u8Index]=3;
+				u8Index++;
+				PWMAudioSetFrequency(BUZZER1,1000);
+				PWMAudioOn(BUZZER1);
+			}	
+		
+			if(bPressed==TRUE)
+			{
+				u16Counter++;
+				u16TimerCounter++;
+
+				if(u16Counter==100)
+				{
+					u16Counter=0;
+					u16TimerCounter=0;
+					LedOff(RED);
+					bPressed=FALSE;
+					PWMAudioOff(BUZZER1);
+				}
+			
+			}
+		}
+		
+		else
+		{
+			if(bPressed==TRUE)
+			{
+				u16Counter++;
+				u16TimerCounter++;
+				
+				if(u16Counter==100)
+				{
+					u16Counter=0;
+					u16TimerCounter=0;
+					LedOff(RED);
+					bPressed=FALSE;
+					PWMAudioOff(BUZZER1);
+				}
+			}
+		}
     }
+		ButtonAcknowledge(BUTTON0);
+	  	ButtonAcknowledge(BUTTON1);
+		ButtonAcknowledge(BUTTON2);	
+		ButtonAcknowledge(BUTTON3);
+	
+	
+	
+	
 
-    
-    
+  
 }/* }end UserApp1SM_Idle() */
     
 
